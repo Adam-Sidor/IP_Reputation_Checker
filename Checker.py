@@ -1,12 +1,29 @@
 import requests
 import csv
 import time
+import sys
 
 API_KEY = ""
 BASE_URL = "https://www.virustotal.com/api/v3/ip_addresses/"
 
-IP_LIST_FILE = "ip_list.txt"
+DEFAULT_IP_FILE = "ip_list.txt"
 OUTPUT_FILE = "output.csv"
+
+def getIPList():
+    ipList = []
+    if len(sys.argv) > 2:
+        arguments = [sys.argv[1],sys.argv[2]]
+        if len(arguments[0]) > 0 and len(arguments[1]) > 0:
+            if "-f" in arguments[0]:
+                ipList = read_ip_list(arguments[1])
+            elif "-ip" in arguments[0]:
+                ipList.append(arguments[1])
+            else:
+                print("Wrong arguments!")
+    else:
+        ipList = read_ip_list(DEFAULT_IP_FILE)
+            
+    return ipList
 
 def read_ip_list(file_path):
     try:
@@ -42,7 +59,7 @@ def save_to_csv(data, file_path):
             writer.writerow(entry)
 
 def main():
-    ip_list = read_ip_list(IP_LIST_FILE)
+    ip_list = getIPList()
     if not ip_list:
         return
     
