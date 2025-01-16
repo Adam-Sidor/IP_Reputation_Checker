@@ -11,18 +11,20 @@ OUTPUT_FILE = "output.csv"
 
 def getIPList():
     ipList = []
-    if len(sys.argv) > 2:
-        arguments = [sys.argv[1],sys.argv[2]]
-        if len(arguments[0]) > 0 and len(arguments[1]) > 0:
-            if "-f" in arguments[0]:
-                ipList = read_ip_list(arguments[1])
-            elif "-ip" in arguments[0]:
-                ipList.append(arguments[1])
-            else:
-                print("Wrong arguments!")
+    if len(sys.argv) >= 2:
+        if len(sys.argv) > 2:
+            arguments = [sys.argv[1],sys.argv[2]]
+            if len(arguments[0]) > 0 and len(arguments[1]) > 0:
+                if "-f" in arguments[0]:
+                    ipList = read_ip_list(arguments[1])
+                elif "-ip" in arguments[0]:
+                    ipList.append(arguments[1])
+                else:
+                    print("Wrong arguments!")
+        else:
+           print("Write 2 arguments") 
     else:
         ipList = read_ip_list(DEFAULT_IP_FILE)
-            
     return ipList
 
 def read_ip_list(file_path):
@@ -73,9 +75,9 @@ def main():
             results.append([ip, "Malicious" if malicious_count > 0 else "Clean", malicious_count])
         if ip_list[-1] != ip:
             time.sleep(15)  # Only 4 requests/min
-    
-    save_to_csv(results, OUTPUT_FILE)
-    print(f"Results saved to: {OUTPUT_FILE}")
+    if results:
+        save_to_csv(results, OUTPUT_FILE)
+        print(f"Results saved to: {OUTPUT_FILE}")
 
 if __name__ == "__main__":
     main()
